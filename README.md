@@ -1,4 +1,5 @@
 # Minecraft-Speed-Proxy-PHPWeb
+![示例图](https://www.linbei.de/example1.jpeg)
 Minecraft Speed Proxy的php网页管理
 
 支持添加删除白名单、查询在线玩家、查询log等功能
