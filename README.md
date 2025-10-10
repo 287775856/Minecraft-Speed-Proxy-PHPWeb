@@ -1,5 +1,7 @@
 # Minecraft-Speed-Proxy-PHPWeb
-PHP web for Minecraft Speed Proxy
+Minecraft Speed Proxy的php网页管理
+
+支持添加删除白名单、查询在线玩家、查询log等功能
 
 上传到支持php的web空间下
 
