@@ -1,5 +1,8 @@
 # Minecraft-Speed-Proxy-PHPWeb
 PHP web for Minecraft Speed Proxy
+
+上传到支持php的web空间下
+
 修改config.php
 ```php
 define('API_BASE_URL', 'http://127.0.0.1:20220/api/');
