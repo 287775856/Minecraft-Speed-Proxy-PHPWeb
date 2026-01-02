@@ -247,3 +247,25 @@ table tr:hover {
 .log-message {
     color: #333;
 }
+
+/* 提示信息 */
+.alert {
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.alert-info {
+    background: #d6eaf8;
+    color: #21618c;
+}
+
+.alert-success {
+    background: #d5f5e3;
+    color: #1e8449;
+}
+
+.alert-danger {
+    background: #fadbd8;
+    color: #c0392b;
+}
