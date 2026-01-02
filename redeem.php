@@ -36,7 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') :
                 $errorMessage = '无法连接到服务器，请稍后再试。';
             } else {
                 $response = makeApiRequest('add_whitelist_user', 'POST', ['username' => $username], $adminToken);
-                if ($response['code'] == 200 && ($response['data']['status'] ?? null) == 200) {
+                $isAdded = $response['code'] == 200 && ($response['data']['status'] ?? null) == 200;
+
+                if (!$isAdded) {
+                    $apiMessage = (string) ($response['data']['message'] ?? 'API 返回错误');
+                    if (stripos($apiMessage, 'already in white list') !== false) {
+                        $whitelistResponse = makeApiRequest('get_whitelist', 'GET', null, $adminToken);
+                        $whitelistUsers = $whitelistResponse['data']['white_list'] ?? [];
+                        foreach ($whitelistUsers as $whitelistUser) {
+                            if (strcasecmp($whitelistUser, $username) === 0) {
+                                $isAdded = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if ($isAdded) {
                     markActivationCodeUsed($code, $username);
                     $successMessage = '兑换成功，已将用户加入白名单。';
                 } else {
