@@ -123,7 +123,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     <div class="container">
         <header>
             <h1>Minecraft 代理服务器管理</h1>
-            <a href="logout.php" class="logout-btn">退出</a>
+            <div>
+                <a href="activation-codes.php" class="btn btn-sm">激活码管理</a>
+                <a href="logout.php" class="logout-btn btn btn-sm">退出</a>
+            </div>
         </header>
                 <?php if (isset($_GET['whitelist_enabled'])): ?>
             <div class="alert alert-info">
