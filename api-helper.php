@@ -51,4 +51,19 @@ function isLoggedIn() {
 function getToken() {
     return $_SESSION['token'] ?? null;
 }
+
+function getAdminToken() {
+    static $cachedToken = null;
+    if ($cachedToken) {
+        return $cachedToken;
+    }
+
+    $response = makeApiRequest('login', 'POST', ['password' => ADMIN_PASSWORD]);
+    if ($response['code'] == 200 && $response['data']['status'] == 200) {
+        $cachedToken = $response['data']['token'];
+        return $cachedToken;
+    }
+
+    return null;
+}
 ?>
