@@ -1,4 +1,5 @@
 <?php
+require_once 'api-helper.php';
 function getActivationCodesFilePath() {
     return __DIR__ . '/data/activation_codes.json';
 }
@@ -129,7 +130,7 @@ function findActivationCode(array $codes, $code) {
 
 function markActivationCodeUsed($code, $username) {
     $codes = loadActivationCodes();
-    [$index, $record] = findActivationCode($codes, $code);
+    list($index, $record) = findActivationCode($codes, $code);
 
     if ($index === null) {
         return false;
@@ -142,32 +143,9 @@ function markActivationCodeUsed($code, $username) {
     return true;
 }
 
-function cleanupExpiredActivations() {
-    $codes = loadActivationCodes();
-    $now = time();
-    $filtered = [];
-    $removed = 0;
-
-    foreach ($codes as $record) {
-        $expiresAt = $record['expires_at'] ?? null;
-        $usedAt = $record['used_at'] ?? null;
-
-        if (empty($usedAt) && !empty($expiresAt) && $expiresAt < $now) {
-            $removed++;
-            continue;
-        }
-
-        $filtered[] = $record;
-    }
-
-    if ($removed > 0) {
-        saveActivationCodes($filtered);
-    }
-
-    return $removed;
 function updateActivationCodeUser($code, $username) {
     $codes = loadActivationCodes();
-    [$index, $record] = findActivationCode($codes, $code);
+    list($index, $record) = findActivationCode($codes, $code);
 
     if ($index === null) {
         return false;

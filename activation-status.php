@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errorMessage = '请输入激活码。';
     } else {
         $codes = loadActivationCodes();
-        [$index, $record] = findActivationCode($codes, $code);
+        list($index, $record) = findActivationCode($codes, $code);
 
         if ($record === null) {
             if (in_array($code, $removedCodes, true)) {
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             updateActivationCodeUser($code, $newUsername);
                             $codes = loadActivationCodes();
-                            [, $record] = findActivationCode($codes, $code);
+                            list(, $record) = findActivationCode($codes, $code);
                             $successMessage = '已成功更新游戏用户名。';
                         } else {
                             $apiMessage = $addResponse['data']['message'] ?? 'API 返回错误';
