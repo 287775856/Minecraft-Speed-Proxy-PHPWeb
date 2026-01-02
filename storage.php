@@ -1,4 +1,5 @@
 <?php
+require_once 'api-helper.php';
 function getActivationCodesFilePath() {
     return __DIR__ . '/data/activation_codes.json';
 }
@@ -22,6 +23,44 @@ function loadActivationCodes() {
     $data = json_decode($content, true);
 
     return is_array($data) ? $data : [];
+}
+
+function cleanupExpiredActivations($token = null) {
+    $codes = loadActivationCodes();
+    $now = time();
+    $remaining = [];
+    $removedCodes = [];
+
+    foreach ($codes as $record) {
+        $expiresAt = $record['expires_at'] ?? null;
+        $usedAt = $record['used_at'] ?? null;
+        $username = $record['used_by'] ?? null;
+
+        $isExpired = $usedAt && $expiresAt && $expiresAt < $now;
+        if (!$isExpired) {
+            $remaining[] = $record;
+            continue;
+        }
+
+        $removed = false;
+        if ($username && $token) {
+            $response = makeApiRequest('remove_whitelist_user', 'POST', ['username' => $username], $token);
+            $removed = $response['code'] == 200 && ($response['data']['status'] ?? null) == 200;
+        }
+
+        if ($removed || !$username) {
+            $removedCodes[] = $record['code'] ?? '';
+            continue;
+        }
+
+        $remaining[] = $record;
+    }
+
+    if (count($remaining) !== count($codes)) {
+        saveActivationCodes($remaining);
+    }
+
+    return $removedCodes;
 }
 
 function saveActivationCodes(array $codes) {
@@ -91,13 +130,27 @@ function findActivationCode(array $codes, $code) {
 
 function markActivationCodeUsed($code, $username) {
     $codes = loadActivationCodes();
-    [$index, $record] = findActivationCode($codes, $code);
+    list($index, $record) = findActivationCode($codes, $code);
 
     if ($index === null) {
         return false;
     }
 
     $codes[$index]['used_at'] = time();
+    $codes[$index]['used_by'] = $username;
+    saveActivationCodes($codes);
+
+    return true;
+}
+
+function updateActivationCodeUser($code, $username) {
+    $codes = loadActivationCodes();
+    list($index, $record) = findActivationCode($codes, $code);
+
+    if ($index === null) {
+        return false;
+    }
+
     $codes[$index]['used_by'] = $username;
     saveActivationCodes($codes);
 
