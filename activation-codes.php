@@ -8,6 +8,9 @@ if (!isLoggedIn()) {
     exit;
 }
 
+$token = getToken();
+cleanupExpiredActivations($token);
+
 $successMessage = null;
 $errorMessage = null;
 $generatedCodes = [];
