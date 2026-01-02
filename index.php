@@ -11,12 +11,9 @@ if (!isLoggedIn()) {
 $token = getToken();
 cleanupExpiredActivations();
 
+cleanupExpiredActivations($token);
 
 // 获取白名单状态
-$whitelist = makeApiRequest('get_whitelist', 'GET', null, $token);
-
-
-// 获取白名单和黑名单
 $whitelist = makeApiRequest('get_whitelist', 'GET', null, $token);
 $blacklist = makeApiRequest('get_blacklist', 'GET', null, $token);
 $onlineUsers = makeApiRequest('get_online_users', 'GET', null, $token);
@@ -145,11 +142,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 <div class="section server-status">
     <?php
     $serverTime = makeApiRequest('get_start_time', 'GET', null, $token);
-    if ($serverTime['code'] == 200) {
+    if (
+        $serverTime['code'] == 200
+        && isset($serverTime['data']['now_time'], $serverTime['data']['start_time'])
+    ) {
         $uptime = $serverTime['data']['now_time'] - $serverTime['data']['start_time'];
         $uptimeStr = gmdate("H:i:s", $uptime);
         echo "<div>服务器已运行: <strong>{$uptimeStr}</strong></div>";
         echo "<div>启动时间: <strong>" . date('Y-m-d H:i:s', $serverTime['data']['start_time']) . "</strong></div>";
+    } else {
+        echo "<div>服务器已运行: <strong>--:--:--</strong></div>";
+        echo "<div>启动时间: <strong>未知</strong></div>";
     }
     ?>
     <a href="logs.php" class="btn">查看完整日志</a>
@@ -208,11 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 <!-- 白名单状态切换 -->
 <div class="toggle-container">
     <span>白名单状态: </span>
+    <?php $whitelistEnabled = $whitelist['data']['whitelist_status'] ?? false; ?>
     <form method="POST" action="index.php" style="display:inline;">
         <input type="hidden" name="action" value="toggle_whitelist">
-        <input type="hidden" name="whitelist_status" value="<?php echo $whitelist['data']['whitelist_status'] ? 'disable' : 'enable'; ?>">
-        <button type="submit" class="btn btn-sm <?php echo $whitelist['data']['whitelist_status'] ? 'btn-success' : 'btn-danger'; ?>">
-            <?php echo $whitelist['data']['whitelist_status'] ? '已启用' : '已禁用'; ?>
+        <input type="hidden" name="whitelist_status" value="<?php echo $whitelistEnabled ? 'disable' : 'enable'; ?>">
+        <button type="submit" class="btn btn-sm <?php echo $whitelistEnabled ? 'btn-success' : 'btn-danger'; ?>">
+            <?php echo $whitelistEnabled ? '已启用' : '已禁用'; ?>
         </button>
     </form>
 </div>
