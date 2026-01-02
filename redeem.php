@@ -10,7 +10,7 @@ if ($adminToken) {
     cleanupExpiredActivations($adminToken);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') :
     $codeInput = $_POST['code'] ?? '';
     $username = $_POST['username'] ?? '';
 
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-}
+endif;
 ?>
 
 <!DOCTYPE html>
