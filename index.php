@@ -9,6 +9,7 @@ if (!isLoggedIn()) {
 
 $token = getToken();
 
+cleanupExpiredActivations($token);
 
 // 获取白名单状态
 $whitelist = makeApiRequest('get_whitelist', 'GET', null, $token);
