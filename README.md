@@ -12,3 +12,11 @@ define('API_BASE_URL', 'http://127.0.0.1:20220/api/');
 define('ADMIN_PASSWORD', '你的API密码'); // 与 Minecraft-Speed-Proxy 配置一致
 ```
 修改api地址和api密码后即可使用
+
+## 定时清理过期激活码
+
+通过 cron 自动执行清理脚本（仅支持 CLI 执行）：
+
+```bash
+*/30 * * * * /usr/bin/php /path/to/Minecraft-Speed-Proxy-PHPWeb/cron-cleanup.php >> /path/to/cleanup.log 2>&1
+```

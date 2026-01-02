@@ -36,7 +36,7 @@ function cleanupExpiredActivations($token = null) {
         $usedAt = $record['used_at'] ?? null;
         $username = $record['used_by'] ?? null;
 
-        $isExpired = $usedAt && $expiresAt && $expiresAt < $now;
+        $isExpired = $expiresAt && $expiresAt < $now;
         if (!$isExpired) {
             $remaining[] = $record;
             continue;
