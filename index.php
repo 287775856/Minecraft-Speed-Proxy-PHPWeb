@@ -9,6 +9,7 @@ if (!isLoggedIn()) {
 }
 
 $token = getToken();
+cleanupExpiredActivations();
 
 cleanupExpiredActivations($token);
 
