@@ -32,6 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (!empty($record['expires_at']) && $record['expires_at'] < time()) {
             $errorMessage = '该激活码已过期。';
         } else {
+            $token = getAdminToken();
+            if (!$token) {
+                $errorMessage = '无法连接到服务器，请稍后再试。';
+            } else {
+                $response = makeApiRequest('add_whitelist_user', 'POST', ['username' => $username], $token);
             if (!$adminToken) {
                 $errorMessage = '无法连接到服务器，请稍后再试。';
             } else {
@@ -61,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <header>
             <h1>激活码兑换</h1>
+            <a href="login.php" class="btn btn-sm">管理员登录</a>
             <div>
                 <a href="activation-status.php" class="btn btn-sm">查询激活状态</a>
                 <a href="login.php" class="btn btn-sm">管理员登录</a>

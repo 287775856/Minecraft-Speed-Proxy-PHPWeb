@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'api-helper.php';
+require_once 'storage.php';
 
 if (!isLoggedIn()) {
     header('Location: login.php');
@@ -8,6 +9,7 @@ if (!isLoggedIn()) {
 }
 
 $token = getToken();
+cleanupExpiredActivations();
 
 cleanupExpiredActivations($token);
 
